@@ -22,7 +22,6 @@ main = hakyll $ do
                     field "recent_posts" (\_ -> recentPostList) `mappend`
                     postCtx
 
-            makeItem ""
             pandocCompiler
               >>= loadAndApplyTemplate "templates/post.html"    postCtx
               >>= loadAndApplyTemplate "templates/default.html" pageCtx
@@ -31,15 +30,12 @@ main = hakyll $ do
     match (fromList ["about.md", "contact.md"]) $ do
         route   $ setExtension "html"
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
             let pagesCtx =
-                    listField "posts" postCtx (return posts) `mappend`
                     field "recent_posts" (\_ -> recentPostList) `mappend`
                     constField "site_desc" siteDesc          `mappend`
                     defaultContext
 
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/archive.html" pagesCtx
+            pandocCompiler
                 >>= loadAndApplyTemplate "templates/default.html" pagesCtx
                 >>= relativizeUrls
 
