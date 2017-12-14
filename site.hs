@@ -32,10 +32,12 @@ main = hakyll $ do
         compile $ do
             let pagesCtx =
                     field "recent_posts" (\_ -> recentPostList) `mappend`
+                    constField "title" "Blog Title"            `mappend`
                     constField "site_desc" siteDesc          `mappend`
                     defaultContext
 
             pandocCompiler
+                >>= loadAndApplyTemplate "templates/page.html" defaultContext
                 >>= loadAndApplyTemplate "templates/default.html" pagesCtx
                 >>= relativizeUrls
 
