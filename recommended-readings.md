@@ -1,5 +1,5 @@
 ---
-title: About me
+title: Recommended readings
 ---
 
-My name is Gauthier SEBILLE, I am a Software Engineer and I enjoy Functional programming.
+- https://sir4ur0n.github.io/

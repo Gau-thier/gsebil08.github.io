@@ -31,7 +31,7 @@ main = hakyllWith config $ do
         >>= loadAndApplyTemplate "templates/default.html" pageCtx
         >>= relativizeUrls
 
-  match (fromList ["about.md", "contact.md"]) $ do
+  match (fromList ["about.md", "contact.md", "recommended-readings.md"]) $ do
     route $ setExtension "html"
     compile $ do
       let pagesCtx =
@@ -43,22 +43,6 @@ main = hakyllWith config $ do
       pandocCompiler
         >>= loadAndApplyTemplate "templates/page.html" defaultContext
         >>= loadAndApplyTemplate "templates/default.html" pagesCtx
-        >>= relativizeUrls
-
-  create ["recommended-readings.html"] $ do
-    route idRoute
-    compile $ do
-      posts <- recentFirst =<< loadAll "posts/*"
-      let archiveCtx =
-            listField "posts" postCtx (return posts)
-              `mappend` field "recent_posts" (\_ -> recentPostList)
-              `mappend` constField "title" siteTitle
-              `mappend` constField "site_desc" siteDesc
-              `mappend` defaultContext
-
-      makeItem ""
-        >>= loadAndApplyTemplate "templates/recommended-readings.html" archiveCtx
-        >>= loadAndApplyTemplate "templates/default.html" archiveCtx
         >>= relativizeUrls
 
   match "index.html" $ do
