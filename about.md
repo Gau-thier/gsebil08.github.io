@@ -2,9 +2,7 @@
 title: About me
 ---
 
-My name is Gauthier SEBILLE.
-
-As a father of two wonderful daughters, I enjoy spending my Saturday morning at the gymnastics 🤸, and my Sunday evening at the Poney club 🦄!
+My name is Gauthier, as a father of two wonderful daughters, I enjoy spending my Saturday morning at the gymnastics 🤸 and my Sunday evening at the Poney club 🦄!
 
 When I am able to find some free time, I like to practice sports, mainly Futsal ⚽ and Road Running 🏃‍♂️.
 
