@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Haskell in production</title>
+        <!-- <link rel="stylesheet" href="/css/default.css" /> -->
+        <link rel="stylesheet" href="../css/style.css" />
+        <link href="//s.w.org/wp-includes/css/dashicons.css?20160504" rel="stylesheet" type="text/css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,300,600&amp;subset=latin,cyrillic-ext,greek-ext,greek,vietnamese,latin-ext,cyrillic" rel="stylesheet" type="text/css">
+
+    </head>
+    <body class="home blog hfeed has-header-image has-sidebar colors-light">
+      <div id="page" class="site">
+          <header id="masthead" class="site-header" role="banner">
+              <div class="custom-header" style="margin-bottom: 0px;">
+
+	              <div class="custom-header-media">
+	                <div id="wp-custom-header" class="wp-custom-header"><img src="../images/header.jpg" width="1282" height="100"></div>		</div>
+
+	                    <div class="site-branding" style="margin-bottom: 0px;">
+	                        <div class="wrap">
+
+	                          <div class="site-branding-text">
+					          <h1 class="site-title"><a href="#link" rel="home">Haskell in production</a></h1>
+
+						          <p class="site-description">Just sharing things</p>
+				                    </div><!-- .site-branding-text -->
+
+				                      <a href="#content" class="menu-scroll-down"><svg class="icon icon-arrow-right" aria-hidden="true" role="img"> <use href="#icon-arrow-right" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-right"></use> </svg><span class="screen-reader-text">Scroll down to content</span></a>
+
+	                        </div><!-- .wrap -->
+                      </div><!-- .site-branding -->
+
+              </div>
+        </header>
+
+        <main role="main" class="site-content-contain">
+            <div id="content" class="site-content">
+            <div class="wrap">
+                <header class="page-header">
+  <h2 class="page-title"></h2>
+  <link rel="shortcut  icon" href="images/favicon.ico" type="image/x-icon" />
+  <link href="../css/syntax.css" rel="stylesheet" />
+</header>
+<div id="primary" class="content-area">
+
+<article class="post type-post status-publish format-standard hentry">
+    <header class="entry-header">
+        <div class="entry-meta">
+            <span class="screen-reader-text">Posted on</span>
+            <a href="#" rel="bookmark">
+                <time class="entry-date published updated" datetime="2008-06-20T20:06:53+00:00">November 24, 2021</time></a>
+        </div>
+        <h3 class="entry-title"><a href="#" rel="bookmark">Haskell in production</a></h3>
+        
+    </header>
+    <section class="entry-content">
+        <h3 id="had-been-a-very-particular-year-for-me.">2019 had been a very particular year for me.</h3>
+<p>In October 2018 I had the opportunity to join Decathlon Offer Team, as a “junior” developper, to work on Marketplace project for Decathlon. “Junior”, because since I joined Decathlon in December 2015, I stopped to code and had a lot of experiences in support teams in different domains. Before that, I had several development experiences in <code>C#, Java</code> and <code>VBA</code> (yeah, <code>VBA</code> ).</p>
+<p>We are now in march 2019, I was starting to feel confident, becoming autonomous on my daily job, understanding the purpose of the project and how my team contributes to it.<br />
+On my <em>(almost)</em> daily running session at break lunch, while starting a new training plan for a marathon, I got hit by a car, on a pedestrian crossing. The car was going at nearly 50km/h and the shock was really hard <em>(maybe it was even harder for my colleague running with me who witnessed the accident)</em>. My head and my left shoulder <em>(tried to)</em> stop the car.</p>
+<p><img src="../images/hip-trafic.png" /></p>
+<p><em>Stopping a car with your head is not a good idea at all, please do not try it.</em></p>
+<p>The days, weeks and months following the accident, I had terrible headaches. They were so painful that I couldn’t even watch a movie without pain. Even having a discussion with two persons was difficult, I was able to handle it, but in the end, the headache was terrible and I had to rest for hours…<br />
+After three months of intensive rest and efforts to come back to a normal life, on 3rd of June, I went back to work, four afternoons per week <em>(thanks french health system).</em></p>
+<blockquote>
+<p>How the hell is this introduction linked to Haskell?!</p>
+</blockquote>
+<h2 id="one-catalog">One Catalog</h2>
+<h3 id="ease-experiences-with-catalog-for-decathlon-and-its-partners">Ease experiences with catalog for Decathlon and its partners</h3>
+<p>One Catalog provides a set of modules to manage sports product catalogs based on schema.org data structure and Decathlon referential data structure (like sports, product types, levels of practice…).</p>
+<p>As a product provider, you will be able to add and manage products AND services. One Catalog centralizes, ensures data integrity (structure and referential data) and broadcasts them to Decathlon and its partners.</p>
+<p>As a digital experience, you will be able to retrieve a unified and standardized catalog filled with sporting goods, sport places, sport coaching or any sport related services provided by Decathlon and its partners.</p>
+<p>Around the 10th of June, Rémi my dear and loved colleague told us</p>
+<blockquote>
+<p>Should we do it in Haskell?</p>
+</blockquote>
+<p><img src="../images/hip-thisisfine.jpeg" /></p>
+<p><em>Me, when Rémi asked the previous question…</em></p>
+<p>The important point is that the only experience we both had in functional programming was a PoC in <code>Elm</code> a few months ago…</p>
+<h2 id="why-was-haskell-eligible">Why was Haskell eligible?</h2>
+<p>When One Catalog receives normalized product sheets for a locale <em>(fr-FR for example)</em> it:<br />
+1- Validates the product sheet structure <em>(structure we defined and are responsible for)</em><br />
+2- Validates the identifiers in the provided product sheet <em>(are they known from the Decathlon referentials?)</em><br />
+3- Denormalizes it, by adding the translated label in the provided locale for the given identifiers.</p>
+<p>The crux of our business is to guarantee and <strong>ensure</strong> <strong>every product sheets going through are consistent in terms of file format and related data.</strong><br />
+<strong>We wanted to use a language with the same <em>mindset</em>, Haskell was a clever choice thanks to its type system and immutability.</strong></p>
+<h2 id="the-difficulties-i-faced">The difficulties I faced</h2>
+<h3 id="am-i-the-dumbest-people-coding-with-haskell">Am I the dumbest people coding with Haskell? 🤔</h3>
+<p>This was really hurting at the beginning… My first pull request was to validate <em>(or not)</em> a JWT token. <strong>I needed one afternoon</strong> <em>(since I was working at 40% at this time, it was like one day for me).</em></p>
+<p>Then I heard about the <a href="https://patrickmn.com/software/the-haskell-pyramid/"><strong>Haskell Pyramid</strong></a><strong>.</strong></p>
+<figure>
+<img src="../images/hip-haskell-pyramid.png" alt="Haskell Pyramid" /><figcaption aria-hidden="true">Haskell Pyramid</figcaption>
+</figure>
+<blockquote>
+<p><strong>First takeaway:</strong></p>
+<p><strong>You are productive, far before encountering the discussions on the Internet… Do not be afraid!</strong></p>
+</blockquote>
+<h3 id="monads">Monads</h3>
+<p><img src="../images/hip-monadseverywhere.jpeg" /></p>
+<p>The first sentence which was really obscure for me was</p>
+<blockquote>
+<p>This is a monad, you have to bind.</p>
+</blockquote>
+<p>Ok dude. Fully understood what you said <em>(I was lying).</em></p>
+<p>You definitively should have a look on this <a href="https://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html#monads">post</a> which helped me a lot to understand <em>Functors</em>, <em>Applicatives</em> and <em>Monads</em>.</p>
+<blockquote>
+<p><strong>Second takeaway (I will quote the previous</strong> <a href="https://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html#monads"><strong>post</strong></a><strong>):</strong></p>
+<p><strong>How to learn about Monads:<br />
+1. Get a PhD in computer science<br />
+2. Throw it away because you don’t need it for this section!</strong></p>
+</blockquote>
+<h3 id="functional-programming-glossary">Functional programming glossary</h3>
+<p>There are so many concepts to see, use <em>(or not)</em> and understand <em>(or not)</em> in Haskell. It is a mathematical functional programming language. Hence, there is a word <em>(and a complicated definition)</em> for each…<br />
+This can be really discouraging at first sight and I felt <em>(often)</em> like the dumbest people coding with Haskell… Nevertheless I was productive and this is directly related to the <em>Haskell-pyramid:</em> <strong><em>You only need a few to be productive.</em></strong></p>
+<p><img src="../images/hip-genius.jpeg" /></p>
+<p><em>Am I a genius?</em></p>
+<blockquote>
+<p><strong>Third takeaway:</strong></p>
+<p><strong>Don’t spend to much time theorizing advanced concepts you will surely never use</strong></p>
+</blockquote>
+<h3 id="higher-order-function">Higher order function</h3>
+<p>It is a function requesting a function as parameter, or returning a function.</p>
+<p>The function <a href="https://hackage.haskell.org/package/base-4.16.0.0/docs/Prelude.html#v:filter">filter</a> is a pretty good example. Its first parameter is the predicate you want to satisfy to filter the data from the given array (the second parameter).</p>
+<p>The first time, it was kinda strange, but since I already knew the lambda in Java, it was not so hard to understand and use.<br />
+The hardest use case was on our denormalization functions:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">buildDenormalizer ::</span> </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">SmallThingToDenormalize</span> <span class="ot">-&gt;</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  ( [<span class="dt">Label</span>], <span class="dt">ThingContainingSmallThingToDenormalize</span> <span class="ot">-&gt;</span> <span class="dt">SmallThingToDenormalize</span> )</span></code></pre></div>
+<p>Working on these functions was quite difficult <em>(at this time I was working at 80%)</em> and gave me a lot of headaches…</p>
+<blockquote>
+<p><strong>Fourth takeaway:</strong></p>
+<p><strong>If you want to make it in a functional way, you have to think different from OOP</strong></p>
+</blockquote>
+<h3 id="strong-type-and-immutability">Strong type and immutability</h3>
+<p>In the first section, I said I needed one afternoon to check if a JWT token was valid or not. Strong type and immutability were part of responsible <em>(and the IO and Maybe Monads, to be honest)</em>.</p>
+<p>When it’s your first time, you don’t have any idea of how to compare one <code>Maybe IntDate</code> to an <code>IO POSIXTime</code> in order to return an… <code>IO Bool</code></p>
+<blockquote>
+<p><strong>Fifth takeaway:</strong></p>
+<p><strong>Nothing will be done implicitly for you. You have to define a</strong> <code>**_ToJSON_**</code><strong>and a</strong> <code>**_FromJSON_**</code> <strong>instance</strong></p>
+</blockquote>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">ToJSON</span> (<span class="dt">BasicProperty</span> <span class="dt">'BeforeDenormalization</span>) <span class="kw">where</span>  </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  toEncoding <span class="dt">BasicProperty</span> {<span class="op">..</span>} <span class="ot">=</span>  </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    pairs  </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      ( <span class="st">&quot;@type&quot;</span> <span class="op">.=</span> (<span class="st">&quot;PropertyValue&quot;</span><span class="ot"> ::</span> <span class="dt">Text</span>)  </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;&gt;</span> <span class="st">&quot;@propertyType&quot;</span> <span class="op">.=</span> (<span class="st">&quot;BasicPropertyValue&quot;</span><span class="ot"> ::</span> <span class="dt">Text</span>)  </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;&gt;</span> <span class="st">&quot;propertyID&quot;</span> <span class="op">.=</span> \_propertyID  </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;&gt;</span> <span class="st">&quot;value&quot;</span> <span class="op">.=</span> \_value  </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      )<span class="kw">instance</span> <span class="dt">FromJSON</span> (<span class="dt">BasicProperty</span> <span class="dt">'BeforeDenormalization</span>) <span class="kw">where</span>  </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  parseJSON <span class="ot">=</span> withObject <span class="st">&quot;BasicProperty&quot;</span> \\o <span class="ot">-&gt;</span> <span class="kw">do</span>  </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    checkStaticField <span class="st">&quot;@type&quot;</span> <span class="st">&quot;PropertyValue&quot;</span> o  </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    \_propertyID <span class="ot">&lt;-</span> o <span class="op">.:</span> <span class="st">&quot;propertyID&quot;</span>  </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    \_value <span class="ot">&lt;-</span> o <span class="op">.:</span> <span class="st">&quot;value&quot;</span>  </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pure</span> <span class="dt">BasicProperty</span> {\_propertyID, \_value, \_name <span class="ot">=</span> ()}</span></code></pre></div>
+<p>Sometimes you have to write it totally manually ☝️<br />
+And sometimes you can rely on your lib 👇</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">ToJSON</span> <span class="dt">MyCustomId</span> <span class="kw">where</span>  </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  toEncoding <span class="ot">=</span> genericToEncoding newtypeOptionsinstance <span class="dt">FromJSON</span> <span class="dt">MyCustomId</span> <span class="kw">where</span>  </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  parseJSON <span class="ot">=</span> genericParseJSON newtypeOptions</span></code></pre></div>
+<h2 id="what-i-loved">What I loved</h2>
+<h3 id="ghci">GHCI ❤️</h3>
+<p>When coding with an other language, I spent a lot of time trying to understand why I was facing this error at runtime…<br />
+With Haskell, my new best friend <em>(even if it yells at me)</em> is the compiler!<br />
+It displays explicit messages <em>(almost every time),</em></p>
+<p><img src="../images/hip-itcompilesitworks.jpeg" /></p>
+<h3 id="feedbacks-loop">Feedbacks loop 🚀</h3>
+<p>This is the logical end of the previous point. If my compiler says <strong><em>“ok”</em></strong> the application will do exactly what I want.<br />
+I even propose changes to review without having to run the application and make some applicative tests on it.</p>
+<h3 id="tdd-for-type-driven-development">TDD for Type Driven Development</h3>
+<p>The good side of the strongly typed system and immutability!<br />
+<em>Steps to follow: 1) Change the type at the main place 2) Compile 3) Fix the error displayed in terminal<br />
+Repeat 2–3 until the tests passed.</em></p>
+<p>Recently I had to make a change in our model:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>\<span class="co">-- Previous model  </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ot">foo ::</span> \[<span class="dt">Text</span>\]  </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>\<span class="co">-- New model  </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ot">foo ::</span> <span class="dt">NonEmpty</span> <span class="dt">Text</span></span></code></pre></div>
+<p>This data must be denormalized. Hence, it is used almost everywhere in our codebase. <strong>This refactor took me around 10 minutes.</strong> It was deployed in qualification a few minutes later and the following day in production.</p>
+<h3 id="hoogle"><a href="https://hoogle.haskell.org/">Hoogle</a> 📖</h3>
+<p>At first sight, I did not know how to use it. But once you are used to deal with types, this becomes magical!</p>
+<p>The search by signature is really helpful:</p>
+<p><img src="../images/hip-hooglesignature.png" /></p>
+<p>My data is wrapped in a list, how can I get rid of this list? Let’s Hoogle it!</p>
+<h3 id="intuitive-explicit-and-easily-readable">Intuitive, explicit and easily readable</h3>
+<p>One day, I was blocked while trying to write something. I don’t remember totally the subject, but I asked help from one teammate, and just start explaining what I wanted to code.</p>
+<blockquote>
+<p>- Oh ok, then just write it<br />
+- What do you mean? It’s because I have no idea on how to write this that I asked for help…<br />
+- Yeah, just write what you told me</p>
+</blockquote>
+<p>Guess what… I simply did it and it worked! Of course, this is not always the case… That’s for the intuitive part.</p>
+<p>About the explicit and readability, an example always beats an explanation, thanks to the type system and Polysemy to wrap <code>IO</code> things in Algebraic Effects <em>(remember the #glossary section? 😆):</em></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">createData ::</span> <span class="dt">Members</span> '\[<span class="dt">Log</span>, <span class="dt">Database</span>\] r <span class="ot">=&gt;</span> <span class="dt">Input</span> <span class="ot">-&gt;</span> <span class="dt">Sem</span> r ()</span></code></pre></div>
+<p>From my point of view, it looks crystal clear. I exactly know what to expect from this function and where to be attentive.</p>
+<h3 id="pattern-matching">Pattern matching</h3>
+<p>One concrete example of how useful is this feature, is when dealing with <code>Either</code> :</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">case</span> (eitherData, eitherDataKey) <span class="kw">of</span>  </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  (<span class="dt">Right</span> (<span class="dt">UpdatedData</span> <span class="kw">data</span>), <span class="dt">Right</span> \_) <span class="ot">-&gt;</span> updateData <span class="kw">data</span>  </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  (<span class="dt">Right</span> <span class="dt">DeletedData</span>, <span class="dt">Right</span> dataKey) <span class="ot">-&gt;</span> deleteData dataKey  </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  (<span class="dt">Left</span> errorMessage, \_) <span class="ot">-&gt;</span> <span class="fu">log</span> <span class="dt">Alert</span> <span class="st">&quot;Failed to parse Data&quot;</span>  </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  (\_, <span class="dt">Left</span> errorMessage) <span class="ot">-&gt;</span> <span class="fu">log</span> <span class="dt">Alert</span> <span class="st">&quot;Failed to parse Data Key&quot;</span></span></code></pre></div>
+<p>When reviewing this kind of code suggestion, you can easily find out what will be the behavior of your application!</p>
+<h3 id="testing">Testing 🤞</h3>
+<p><img src="../images/hip-youshallpass.jpeg" /></p>
+<p><em>When I launch “stack test”</em></p>
+<p>All the pure functions <em>(without</em> <code>_IO_</code><em>)</em> are easily testable! We even set a lot of property tests. This is really comfortable and satisfying. When you see <em>560 tests passed</em> you feel happy and confident about the robustness of your code suggestion.<br />
+The un-pure functions are not so difficult to test. We are able to <code>mock</code> almost everything!<br />
+I think the real killer-feature we have are our <code>full chain tests</code> . We just <em>“run” (with mocked data)</em> our application on input product sheets available in our documentation! And the results must be the exact outputs we also provide in our documentation!<br />
+<strong>If these tests are not passing anymore, or if you have to modify the inputs / outputs, you definitively broke something!</strong></p>
+<h2 id="two-steps-back">Two steps back</h2>
+<p>I really enjoyed this experience. <strong>I think this is the best experience I ever had.</strong> Maybe the only one where we spend much time thinking and coding than debugging or solving existing troubles…<br />
+Of course, everything is not easy and pink. But I do not think it is more complex than for any other new language or tool you start using.</p>
+<p>Thanks to the property tests, immutability and type system, <strong>I really feel confident about the code I produce.</strong><br />
+Thanks to the whole team, I never felt alone. The community also helped me, every member is passionate and want to share and help each other. Just have a look on Stackoverflow, every Haskell answer is detailed and helpful.</p>
+<p>I define myself as a perpetual learner and a pragmatic software engineer. <strong>I believe the hardest part of my job is to wisely choose my tools.</strong></p>
+<h3 id="recently-i-discovered-the-maslows-hammer">Recently, I discovered the <a href="https://en.wikipedia.org/wiki/Law_of_the_instrument">Maslow’s hammer</a>:</h3>
+<blockquote>
+<p>If the only tool you have is a hammer, everything looks like a nail.</p>
+</blockquote>
+<p>This hammer changed my way to think software engineering. Now, I do believe we are engineers, and like other engineers, we should rely <em>(when possible)</em> on strong mathematics principles.<br />
+I do believe it’s worth it to learn a new language, or consider a new framework, or use a new tool, or try a new methodology, or whatever… Of course, you must have solid arguments to convince your teammates or your managers and define solid KPIs to prove it.</p>
+<p><strong>To conclude, how does your technical stack looks like?</strong><br />
+- Expose and consume HTTP REST APIs<br />
+- Consume and produce Kafka messages<br />
+- Persist with a PostgreSQL database<br />
+- Build with Jenkins<br />
+- Kubernetes &amp; Docker on Google Cloud Platform<br />
+- Flux for continuous deployment<br />
+- Grafana to monitor and alert</p>
+<h3 id="i-am-still-searching-but-except-haskell-instead-of-java-i-cannot-find-any-differences">I am still searching, but except Haskell instead of Java I cannot find any differences…</h3>
+<p>I like to think:</p>
+<blockquote>
+<p>From Software Developer to Software Engineer thanks to Haskell</p>
+</blockquote>
+<p>I used to be Software Developer, coding functioning applications. <strong>Now, I am a Software Engineer, coding robust applications that will work for ever.</strong></p>
+<h2 id="i-do-think-it-worth-it-to-learn-haskell-and-to-use-it-in-production.">I do think it worth it to learn Haskell and to use it in production.</h2>
+<p>Hence, I will finish with a question:</p>
+<h1 id="should-you-do-it-in-haskell">Should you do it in Haskell?</h1>
+    </section>
+</article>
+
+</div>
+                <aside id="secondary" class="widget-area" role="complementary" aria-label="Blog Sidebar">
+  <section id="search-3" class="widget widget_search">
+
+    <!-- <form role="search" method="get" class="search-form" action="https://wp-themes.com/"> -->
+    <!--   <label for="search-form-5a315d71e7d90"> -->
+    <!--     <span class="screen-reader-text">Search for:</span> -->
+    <!--   </label> -->
+    <!--   <input type="search" id="search-form-5a315d71e7d90" class="search-field" placeholder="Search …" value="" name="s"> -->
+    <!--     <button type="submit" class="search-submit"><svg class="icon icon-search" aria-hidden="true" role="img"> <use href="#icon-search" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-search"></use> </svg><span class="screen-reader-text">Search</span></button> -->
+    <!--   </form> -->
+    <!-- </section> -->
+    <section id="archives-3" class="widget widget_archive">
+      <h2 class="widget-title">Pages</h2>
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="../about.html">About me</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+        <li><a href="../recommended-readings.html">Recommended readings</a></li>
+      </ul>
+    </section>
+
+    <section id="recent-posts-3" class="widget widget_recent_entries">
+      <h2 class="widget-title">Recent Posts</h2>
+      <ul>
+        <li><a href="../posts/2021-11-24-Haskell-in-production.html" title="Haskell in production">Haskell in production</a></li>
+
+      </ul>
+    </section>
+  </section>
+
+  <!--   <section id="categories-3" class="widget widget_categories"> -->
+  <!--     <h2 class="widget-title">Categories</h2>		<ul> -->
+  <!--     <li class="cat-item cat-item-6"> -->
+  <!--       <a href="#">First Child Category</a> -->
+  <!--     </li> -->
+  <!-- 	</ul> -->
+  <!--   </section> -->
+</aside>
+
+            </div>
+            </div>
+
+          <footer id="colophon" class="site-footer" role="contentinfo">
+            <div class="wrap">
+              <div class="site-info">
+              Site proudly generated by
+              <a href="http://jaspervdj.be/hakyll">Hakyll</a>.
+              Theme provided by <a href="http://github.com/katychuang.com/wp-twentyseventeen">katychuang </a>
+              </div>
+            </div>
+          </footer>
+
+        </main>
+      </div>
+    </body>
+</html>

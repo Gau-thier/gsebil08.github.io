@@ -1583,6 +1583,7 @@ body {
 	margin: 0;
 	padding: 0;
 	text-transform: uppercase;
+  text-shadow: black 0.1em 0.1em 0.2em;
 }
 
 .site-title,
@@ -1603,6 +1604,7 @@ body.has-header-video .site-title a {
 	font-size: 13px;
 	font-size: 0.8125rem;
 	margin-bottom: 0;
+  text-shadow: black 0.1em 0.1em 0.2em;
 }
 
 body.has-header-image .site-description,
@@ -3350,19 +3352,19 @@ p > object:only-child {
 
 	.wrap {
 		max-width: 1000px;
-		padding-left: 3em;
-		padding-right: 3em;
+		padding-left: 0.5em;
+		padding-right: 0.5em;
 	}
 
 	.has-sidebar:not(.error404) #primary {
 		float: left;
-		width: 58%;
+		width: 81%;
 	}
 
 	.has-sidebar #secondary {
 		float: right;
 		padding-top: 0;
-		width: 36%;
+		width: 17%;
 	}
 
 	.error404 #primary {
@@ -3703,7 +3705,7 @@ p > object:only-child {
 	.home.blog.has-header-image .custom-header-media,
 	.home.blog.has-header-video .custom-header-media {
 		height: 1200px;
-		height: 100vh;
+		height: 40vh;
 		max-height: 100%;
 		overflow: hidden;
 	}
@@ -4250,6 +4252,8 @@ p > object:only-child {
 
 	.site-title {
 		font-size: 25pt;
+    color: white;
+    text-shadow: black 0.1em 0.1em 0.2em;
 	}
 
 	.site-description {
