@@ -8,4 +8,4 @@ title: Recommended readings
 - [Two Years of Functional Programming in JavaScript: Lessons Learned](https://medium.com/hackernoon/two-years-of-functional-programming-in-javascript-lessons-learned-1851667c726)
 - [10 reasons to use Haskell](https://serokell.io/blog/10-reasons-to-use-haskell)
 - [Your easy guide to Monads, Applicatives, & Functors](https://medium.com/@lettier/your-easy-guide-to-monads-applicatives-functors-862048d61610)
-- [Why Haskell is our first choice @foxhound](https://www.foxhound.systems/blog/why-haskell-for-production/)
+- [foxhound - Why Haskell is our first choice](https://www.foxhound.systems/blog/why-haskell-for-production/)
