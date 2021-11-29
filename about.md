@@ -4,11 +4,12 @@ title: About me
 
 My name is Gauthier SEBILLE.
 
-As a father of two wonderful daughters, I enjoy spending my Saturday morning at the gymnastics, and my Sunday evening at the Poney club :unicorn: !
+As a father of two wonderful daughters, I enjoy spending my Saturday morning at the gymnastics 🤸, and my Sunday evening at the Poney club 🦄!
 
-When I am able to find some free time, I like to practice sports, mainly Futsal :soccer: and Road Running :running:.
+When I am able to find some free time, I like to practice sports, mainly Futsal ⚽ and Road Running 🏃‍♂️.
 
 You can find me on the Internet here:
+
 - [GitHub](https://github.com/gsebil08)
 - [LinkedIn](https://www.linkedin.com/in/gauthiersebille/)
 - [Twitter](https://twitter.com/@_iHakunA)
