@@ -77,8 +77,8 @@ You definitively should have a look on this [post](https://adit.io/posts/2013-04
 > **Second takeaway (I will quote the previous** [**post**](https://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html#monads)**):**
 >
 > **How to learn about Monads:  
-> 1\. Get a PhD in computer science  
-> 2\. Throw it away because you don’t need it for this section!**
+> 1. Get a PhD in computer science  
+> 2. Throw it away because you don’t need it for this section!**
 
 ### Functional programming glossary
 
@@ -179,7 +179,7 @@ Recently I had to make a change in our model:
 
 ```haskell
 -- Previous model  
-foo :: [Text\  
+foo :: [Text]
 -- New model  
 foo :: NonEmpty Text
 ```
@@ -220,10 +220,10 @@ One concrete example of how useful is this feature, is when dealing with `Either
 
 ```haskell
 case (eitherData, eitherDataKey) of  
-  (Right (UpdatedData data), Right \_) -> updateData data  
+  (Right (UpdatedData data), Right _) -> updateData data  
   (Right DeletedData, Right dataKey) -> deleteData dataKey  
-  (Left errorMessage, \_) -> log Alert "Failed to parse Data"  
-  (\_, Left errorMessage) -> log Alert "Failed to parse Data Key"
+  (Left errorMessage, _) -> log Alert "Failed to parse Data"  
+  (_, Left errorMessage) -> log Alert "Failed to parse Data Key"
 ```
 
 When reviewing this kind of code suggestion, you can easily find out what will be the behavior of your application!
