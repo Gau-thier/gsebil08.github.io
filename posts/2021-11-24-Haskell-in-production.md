@@ -132,7 +132,8 @@ instance ToJSON (BasicProperty 'BeforeDenormalization) where
           <> "@propertyType" .= ("BasicPropertyValue" :: Text)  
           <> "propertyID" .= _propertyID  
           <> "value" .= _value  
-      )instance FromJSON (BasicProperty 'BeforeDenormalization) where  
+      )
+instance FromJSON (BasicProperty 'BeforeDenormalization) where  
   parseJSON = withObject "BasicProperty" \o -> do  
     checkStaticField "@type" "PropertyValue" o  
     _propertyID <- o .: "propertyID"  
