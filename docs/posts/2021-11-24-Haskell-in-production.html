@@ -139,26 +139,29 @@ The hardest use case was on our denormalization functions:</p>
 <p>When it’s your first time, you don’t have any idea of how to compare one <code>Maybe IntDate</code> to an <code>IO POSIXTime</code> in order to return an… <code>IO Bool</code></p>
 <blockquote>
 <p><strong>Fifth takeaway:</strong></p>
-<p><strong>Nothing will be done implicitly for you. You have to define a</strong> <code>**_ToJSON_**</code><strong>and a</strong> <code>**_FromJSON_**</code> <strong>instance</strong></p>
+<p><strong>Nothing will be done implicitly for you. You have to define a</strong> <code>ToJSON</code> <strong>and a</strong> <code>FromJSON</code> <strong>instance</strong></p>
 </blockquote>
 <div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">ToJSON</span> (<span class="dt">BasicProperty</span> <span class="dt">'BeforeDenormalization</span>) <span class="kw">where</span>  </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  toEncoding <span class="dt">BasicProperty</span> {<span class="op">..</span>} <span class="ot">=</span>  </span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    pairs  </span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      ( <span class="st">&quot;@type&quot;</span> <span class="op">.=</span> (<span class="st">&quot;PropertyValue&quot;</span><span class="ot"> ::</span> <span class="dt">Text</span>)  </span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;&gt;</span> <span class="st">&quot;@propertyType&quot;</span> <span class="op">.=</span> (<span class="st">&quot;BasicPropertyValue&quot;</span><span class="ot"> ::</span> <span class="dt">Text</span>)  </span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;&gt;</span> <span class="st">&quot;propertyID&quot;</span> <span class="op">.=</span> \_propertyID  </span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;&gt;</span> <span class="st">&quot;value&quot;</span> <span class="op">.=</span> \_value  </span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      )<span class="kw">instance</span> <span class="dt">FromJSON</span> (<span class="dt">BasicProperty</span> <span class="dt">'BeforeDenormalization</span>) <span class="kw">where</span>  </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  parseJSON <span class="ot">=</span> withObject <span class="st">&quot;BasicProperty&quot;</span> \\o <span class="ot">-&gt;</span> <span class="kw">do</span>  </span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    checkStaticField <span class="st">&quot;@type&quot;</span> <span class="st">&quot;PropertyValue&quot;</span> o  </span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    \_propertyID <span class="ot">&lt;-</span> o <span class="op">.:</span> <span class="st">&quot;propertyID&quot;</span>  </span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    \_value <span class="ot">&lt;-</span> o <span class="op">.:</span> <span class="st">&quot;value&quot;</span>  </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pure</span> <span class="dt">BasicProperty</span> {\_propertyID, \_value, \_name <span class="ot">=</span> ()}</span></code></pre></div>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;&gt;</span> <span class="st">&quot;propertyID&quot;</span> <span class="op">.=</span> _propertyID  </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>          <span class="op">&lt;&gt;</span> <span class="st">&quot;value&quot;</span> <span class="op">.=</span> _value  </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">FromJSON</span> (<span class="dt">BasicProperty</span> <span class="dt">'BeforeDenormalization</span>) <span class="kw">where</span>  </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  parseJSON <span class="ot">=</span> withObject <span class="st">&quot;BasicProperty&quot;</span> \o <span class="ot">-&gt;</span> <span class="kw">do</span>  </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    checkStaticField <span class="st">&quot;@type&quot;</span> <span class="st">&quot;PropertyValue&quot;</span> o  </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    _propertyID <span class="ot">&lt;-</span> o <span class="op">.:</span> <span class="st">&quot;propertyID&quot;</span>  </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    _value <span class="ot">&lt;-</span> o <span class="op">.:</span> <span class="st">&quot;value&quot;</span>  </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pure</span> <span class="dt">BasicProperty</span> {_propertyID, _value, _name <span class="ot">=</span> ()}</span></code></pre></div>
 <p>Sometimes you have to write it totally manually ☝️<br />
 And sometimes you can rely on your lib 👇</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">ToJSON</span> <span class="dt">MyCustomId</span> <span class="kw">where</span>  </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  toEncoding <span class="ot">=</span> genericToEncoding newtypeOptionsinstance <span class="dt">FromJSON</span> <span class="dt">MyCustomId</span> <span class="kw">where</span>  </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  parseJSON <span class="ot">=</span> genericParseJSON newtypeOptions</span></code></pre></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  toEncoding <span class="ot">=</span> genericToEncoding newtypeOptions</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">instance</span> <span class="dt">FromJSON</span> <span class="dt">MyCustomId</span> <span class="kw">where</span>  </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  parseJSON <span class="ot">=</span> genericParseJSON newtypeOptions</span></code></pre></div>
 <h2 id="what-i-loved">What I loved</h2>
 <h3 id="ghci">GHCI ❤️</h3>
 <p>When coding with an other language, I spent a lot of time trying to understand why I was facing this error at runtime…<br />
@@ -173,9 +176,9 @@ I even propose changes to review without having to run the application and make 
 <em>Steps to follow: 1) Change the type at the main place 2) Compile 3) Fix the error displayed in terminal<br />
 Repeat 2–3 until the tests passed.</em></p>
 <p>Recently I had to make a change in our model:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>\<span class="co">-- Previous model  </span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ot">foo ::</span> \[<span class="dt">Text</span>\]  </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>\<span class="co">-- New model  </span></span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- Previous model  </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ot">foo ::</span> [<span class="dt">Text</span>]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">-- New model  </span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ot">foo ::</span> <span class="dt">NonEmpty</span> <span class="dt">Text</span></span></code></pre></div>
 <p>This data must be denormalized. Hence, it is used almost everywhere in our codebase. <strong>This refactor took me around 10 minutes.</strong> It was deployed in qualification a few minutes later and the following day in production.</p>
 <h3 id="hoogle"><a href="https://hoogle.haskell.org/">Hoogle</a> 📖</h3>
@@ -186,21 +189,25 @@ Repeat 2–3 until the tests passed.</em></p>
 <h3 id="intuitive-explicit-and-easily-readable">Intuitive, explicit and easily readable</h3>
 <p>One day, I was blocked while trying to write something. I don’t remember totally the subject, but I asked help from one teammate, and just start explaining what I wanted to code.</p>
 <blockquote>
-<p>- Oh ok, then just write it<br />
-- What do you mean? It’s because I have no idea on how to write this that I asked for help…<br />
-- Yeah, just write what you told me</p>
+<ul>
+<li>Oh ok, then just write it<br />
+</li>
+<li>What do you mean? It’s because I have no idea on how to write this that I asked for help…<br />
+</li>
+<li>Yeah, just write what you told me</li>
+</ul>
 </blockquote>
 <p>Guess what… I simply did it and it worked! Of course, this is not always the case… That’s for the intuitive part.</p>
 <p>About the explicit and readability, an example always beats an explanation, thanks to the type system and Polysemy to wrap <code>IO</code> things in Algebraic Effects <em>(remember the #glossary section? 😆):</em></p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">createData ::</span> <span class="dt">Members</span> '\[<span class="dt">Log</span>, <span class="dt">Database</span>\] r <span class="ot">=&gt;</span> <span class="dt">Input</span> <span class="ot">-&gt;</span> <span class="dt">Sem</span> r ()</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">createData ::</span> <span class="dt">Members</span> '[<span class="dt">Log</span>, <span class="dt">Database</span>] r <span class="ot">=&gt;</span> <span class="dt">Input</span> <span class="ot">-&gt;</span> <span class="dt">Sem</span> r ()</span></code></pre></div>
 <p>From my point of view, it looks crystal clear. I exactly know what to expect from this function and where to be attentive.</p>
 <h3 id="pattern-matching">Pattern matching</h3>
 <p>One concrete example of how useful is this feature, is when dealing with <code>Either</code> :</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">case</span> (eitherData, eitherDataKey) <span class="kw">of</span>  </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  (<span class="dt">Right</span> (<span class="dt">UpdatedData</span> <span class="kw">data</span>), <span class="dt">Right</span> \_) <span class="ot">-&gt;</span> updateData <span class="kw">data</span>  </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  (<span class="dt">Right</span> (<span class="dt">UpdatedData</span> <span class="kw">data</span>), <span class="dt">Right</span> _) <span class="ot">-&gt;</span> updateData <span class="kw">data</span>  </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  (<span class="dt">Right</span> <span class="dt">DeletedData</span>, <span class="dt">Right</span> dataKey) <span class="ot">-&gt;</span> deleteData dataKey  </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  (<span class="dt">Left</span> errorMessage, \_) <span class="ot">-&gt;</span> <span class="fu">log</span> <span class="dt">Alert</span> <span class="st">&quot;Failed to parse Data&quot;</span>  </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  (\_, <span class="dt">Left</span> errorMessage) <span class="ot">-&gt;</span> <span class="fu">log</span> <span class="dt">Alert</span> <span class="st">&quot;Failed to parse Data Key&quot;</span></span></code></pre></div>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  (<span class="dt">Left</span> errorMessage, _) <span class="ot">-&gt;</span> <span class="fu">log</span> <span class="dt">Alert</span> <span class="st">&quot;Failed to parse Data&quot;</span>  </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  (_, <span class="dt">Left</span> errorMessage) <span class="ot">-&gt;</span> <span class="fu">log</span> <span class="dt">Alert</span> <span class="st">&quot;Failed to parse Data Key&quot;</span></span></code></pre></div>
 <p>When reviewing this kind of code suggestion, you can easily find out what will be the behavior of your application!</p>
 <h3 id="testing">Testing 🤞</h3>
 <p><img src="../images/hip-youshallpass.jpeg" /></p>
