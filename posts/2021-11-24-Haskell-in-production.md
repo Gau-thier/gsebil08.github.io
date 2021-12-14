@@ -122,7 +122,7 @@ When it’s your first time, you don’t have any idea of how to compare one `Ma
 
 > **Fifth takeaway:**
 >
-> **Nothing will be done implicitly for you. You have to define a** `**_ToJSON_**`**and a** `**_FromJSON_**` **instance**
+> **Nothing will be done implicitly for you. You have to define a** `ToJSON` **and a** `FromJSON` **instance**
 
 ```haskell
 instance ToJSON (BasicProperty 'BeforeDenormalization) where  
@@ -130,14 +130,14 @@ instance ToJSON (BasicProperty 'BeforeDenormalization) where
     pairs  
       ( "@type" .= ("PropertyValue" :: Text)  
           <> "@propertyType" .= ("BasicPropertyValue" :: Text)  
-          <> "propertyID" .= \_propertyID  
-          <> "value" .= \_value  
+          <> "propertyID" .= _propertyID  
+          <> "value" .= _value  
       )instance FromJSON (BasicProperty 'BeforeDenormalization) where  
-  parseJSON = withObject "BasicProperty" \\o -> do  
+  parseJSON = withObject "BasicProperty" \o -> do  
     checkStaticField "@type" "PropertyValue" o  
-    \_propertyID <- o .: "propertyID"  
-    \_value <- o .: "value"  
-    pure BasicProperty {\_propertyID, \_value, \_name = ()}
+    _propertyID <- o .: "propertyID"  
+    _value <- o .: "value"  
+    pure BasicProperty {_propertyID, _value, _name = ()}
 ```
 
 Sometimes you have to write it totally manually ☝️  
@@ -145,7 +145,9 @@ And sometimes you can rely on your lib 👇
 
 ```haskell
 instance ToJSON MyCustomId where  
-  toEncoding = genericToEncoding newtypeOptionsinstance FromJSON MyCustomId where  
+  toEncoding = genericToEncoding newtypeOptions
+
+instance FromJSON MyCustomId where  
   parseJSON = genericParseJSON newtypeOptions
 ```
 
@@ -176,9 +178,9 @@ _Steps to follow:
 Recently I had to make a change in our model:
 
 ```haskell
-\-- Previous model  
-foo :: \[Text\]  
-\-- New model  
+-- Previous model  
+foo :: [Text\  
+-- New model  
 foo :: NonEmpty Text
 ```
 
@@ -198,16 +200,16 @@ My data is wrapped in a list, how can I get rid of this list? Let’s Hoogle it!
 
 One day, I was blocked while trying to write something. I don’t remember totally the subject, but I asked help from one teammate, and just start explaining what I wanted to code.
 
-> \- Oh ok, then just write it  
-> \- What do you mean? It’s because I have no idea on how to write this that I asked for help…  
-> \- Yeah, just write what you told me
+> - Oh ok, then just write it  
+> - What do you mean? It’s because I have no idea on how to write this that I asked for help…  
+> - Yeah, just write what you told me
 
 Guess what… I simply did it and it worked! Of course, this is not always the case… That’s for the intuitive part.
 
 About the explicit and readability, an example always beats an explanation, thanks to the type system and Polysemy to wrap `IO` things in Algebraic Effects _(remember the #glossary section? 😆):_
 
 ```haskell
-createData :: Members '\[Log, Database\] r => Input -> Sem r ()
+createData :: Members '[Log, Database] r => Input -> Sem r ()
 ```
 
 From my point of view, it looks crystal clear. I exactly know what to expect from this function and where to be attentive.
