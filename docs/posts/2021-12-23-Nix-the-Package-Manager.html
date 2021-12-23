@@ -64,8 +64,8 @@
 </blockquote>
 <p>I also remember how hard it was to get a fully working Haskell environment when we started developing our project with this language (thank you 32bits <code>lzlib</code> on our 64 bits MacOS…)!</p>
 <p><img src="../images/nixpm-sweating.gif" /></p>
-<p><strong>Then, we discover <a href="https://nixos.org/nix">Nix</a>!</strong></p>
-<h2 id="what-is-nix">What is Nix?</h2>
+<p><strong>Then, we discover <a href="https://nixos.org">Nix</a>!</strong></p>
+<h1 id="what-is-nix">What is Nix?</h1>
 <p>Actually, there are two different things behind this name:</p>
 <ul>
 <li>A package manager</li>
@@ -119,20 +119,20 @@ buildGoModule rec {
 </ul>
 <p>Ok, that was for the theorical part.</p>
 <p><strong>But how does Nix helps us everyday?</strong></p>
-<h2 id="some-of-the-benefits">Some of the benefits</h2>
+<h1 id="some-of-the-benefits">Some of the benefits</h1>
 <p>I guess there are some others, like the <a href="https://docs.haskellstack.org/en/stable/nix_integration/">Nix integration</a> for <a href="https://docs.haskellstack.org/en/stable/README/">The Haskell Tool Stack</a>, but since I only use the <code>nix-shell</code>, I do not have any idea of possible other benefits…</p>
-<h3 id="reproducibility">Reproducibility</h3>
+<h2 id="reproducibility">Reproducibility</h2>
 <p>This is the first one coming to my mind! And I guess, the real motivation behind Nix.</p>
 <p><strong>Two people building the same package will always get the same output</strong>, at least, if you are careful enough with pinning the versions of inputs in place. And in the case of different inputs, it will be very clear since the store path will change!</p>
-<h3 id="binary-caching">Binary caching</h3>
+<h2 id="binary-caching">Binary caching</h2>
 <p>Since the store path is known before building it and we are sure that the same store path will contain the same output, we can <em>replace</em> that store path from some other location (as long as that location has that path and we trust the person building it).</p>
 <p>To be clear, it is almost like substituting a function by its result since this function is pure and has no side-effects!</p>
-<h3 id="multiple-versions-of-any-package-can-be-installed-simultaneously">Multiple versions of any package can be installed simultaneously</h3>
+<h2 id="multiple-versions-of-any-package-can-be-installed-simultaneously">Multiple versions of any package can be installed simultaneously</h2>
 <p>Every package is installed under its own prefix, so there are no collisions. This can be really handy during development – think Python’s virtualenvs but for any language!</p>
 <p>To sum up, you can have two different versions of <code>docker-compose</code> (as long as they are both available…)!</p>
-<h3 id="distributed-building">Distributed building</h3>
+<h2 id="distributed-building">Distributed building</h2>
 <p>Since we know exactly what is needed to <em>create</em> any derivation, it can be done remotely as long as the remote server has all the dependencies already (or can build them faster than the local machine).</p>
-<h3 id="easy-onboarding">Easy onboarding</h3>
+<h2 id="easy-onboarding">Easy onboarding</h2>
 <p>I remember projects with a <code>getting started</code> section requiring to globally install dozens of different packages, with sometimes, a very specific version… Then you spent hours, or even days to get your development environment ready because nothing goes exactly like explained in this <code>getting-started.md</code> file…</p>
 <p>Thanks to Nix, you can provide a fully working <code>nix-shell</code>. Hence, the only required tool to install globally on your laptop is Nix. Within this provided <code>nix-shell</code> he will be able to find any referenced packages:</p>
 <pre class="shell"><code>$ which docker-compose
@@ -142,14 +142,14 @@ $ nix-shell
 [nix-shell:~/my-project-with-nix-shell]$ which docker-compose
 /nix/store/kchjb4ncrk6c1qakdfd0xk11905fvy7f-docker-compose-1.29.2/bin/docker-compose</code></pre>
 <p><strong>How comfortable is that? A lot.</strong></p>
-<h2 id="the-ecosystem">The ecosystem</h2>
-<h3 id="nixos">NixOS</h3>
+<h1 id="the-ecosystem">The ecosystem</h1>
+<h2 id="nixos">NixOS</h2>
 <p>Directly linked to the Nix package manager and the Nix language, an OS is available. I do not use it, but if I understand correctly:</p>
 <p>NixOS is a GNU/Linux distribution using Nix as both a package manager and a configuration manager. Each configuration file is a derivation, and your whole system is a derivation, which depends on all the applications and config files you have explictly specified. Hence, we get all the benefits of Nix applied to the runtime environment.</p>
 <p>To sum up, if two people install a NixOS system that has the exact same store path, they will always get exactly the same system on their computers! Good luck doing that with any other OS!</p>
-<h3 id="nixpkgs">Nixpkgs</h3>
+<h2 id="nixpkgs">Nixpkgs</h2>
 <p><code>nixpkgs</code> is a massive collection of package descriptions using the Nix language. Once again, have a look on the <a href="https://nixos.wiki/wiki/Nixpkgs">official wiki</a></p>
-<h2 id="you-should-give-it-a-try">You should give it a try</h2>
+<h1 id="you-should-give-it-a-try">You should give it a try</h1>
 <p>The <code>nix-shell</code> is definitively a game changer. Even our Product Manager is now able to easily run our applications without our help!</p>
 <p>There are different ways to try it out, you can directly try NixOS on your machine, or on a VM. Or, as I do, you can install Nix and provide your own <code>nix-shell</code> for your different projects!</p>
 <p>Feel free to have a look on the <a href="https://nixos.org/guides/nix-pills/index.html">Nix pills</a> or even the <a href="https://nix.dev/">Nix cookbook</a>. They both are useful to understand the ecosystem and the glossary of this environment!</p>

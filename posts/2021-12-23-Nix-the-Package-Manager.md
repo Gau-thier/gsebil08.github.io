@@ -12,9 +12,9 @@ I also remember how hard it was to get a fully working Haskell environment when 
 
 ![](../images/nixpm-sweating.gif)
 
-**Then, we discover [Nix](https://nixos.org/nix)!**
+**Then, we discover [Nix](https://nixos.org)!**
 
-## What is Nix?
+# What is Nix?
 
 Actually, there are two different things behind this name:
 
@@ -82,33 +82,33 @@ Ok, that was for the theorical part.
 
 **But how does Nix helps us everyday?**
 
-## Some of the benefits
+# Some of the benefits
 
 I guess there are some others, like the [Nix integration](https://docs.haskellstack.org/en/stable/nix_integration/) for [The Haskell Tool Stack](https://docs.haskellstack.org/en/stable/README/), but since I only use the `nix-shell`, I do not have any idea of possible other benefits...
 
-### Reproducibility
+## Reproducibility
 
 This is the first one coming to my mind! And I guess, the real motivation behind Nix.
 
 **Two people building the same package will always get the same output**, at least, if you are careful enough with pinning the versions of inputs in place. And in the case of different inputs, it will be very clear since the store path will change!
 
-### Binary caching
+## Binary caching
 
 Since the store path is known before building it and we are sure that the same store path will contain the same output, we can _replace_ that store path from some other location (as long as that location has that path and we trust the person building it).
 
 To be clear, it is almost like substituting a function by its result since this function is pure and has no side-effects!
 
-### Multiple versions of any package can be installed simultaneously
+## Multiple versions of any package can be installed simultaneously
 
 Every package is installed under its own prefix, so there are no collisions. This can be really handy during development – think Python’s virtualenvs but for any language!
 
 To sum up, you can have two different versions of `docker-compose` (as long as they are both available...)!
 
-### Distributed building
+## Distributed building
 
 Since we know exactly what is needed to _create_ any derivation, it can be done remotely as long as the remote server has all the dependencies already (or can build them faster than the local machine).
 
-### Easy onboarding
+## Easy onboarding
 
 I remember projects with a `getting started` section requiring to globally install dozens of different packages, with sometimes, a very specific version... Then you spent hours, or even days to get your development environment ready because nothing goes exactly like explained in this `getting-started.md` file...
 
@@ -125,9 +125,9 @@ $ nix-shell
 
 **How comfortable is that? A lot.**
 
-## The ecosystem
+# The ecosystem
 
-### NixOS
+## NixOS
 
 Directly linked to the Nix package manager and the Nix language, an OS is available. I do not use it, but if I understand correctly:
 
@@ -135,11 +135,11 @@ NixOS is a GNU/Linux distribution using Nix as both a package manager and a conf
 
 To sum up, if two people install a NixOS system that has the exact same store path, they will always get exactly the same system on their computers! Good luck doing that with any other OS!
 
-### Nixpkgs
+## Nixpkgs
 
 `nixpkgs` is a massive collection of package descriptions using the Nix language. Once again, have a look on the [official wiki](https://nixos.wiki/wiki/Nixpkgs)
 
-## You should give it a try
+# You should give it a try
 
 The `nix-shell` is definitively a game changer. Even our Product Manager is now able to easily run our applications without our help!
 
