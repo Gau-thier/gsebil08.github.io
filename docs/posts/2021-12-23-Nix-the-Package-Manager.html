@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Nix, the package manager</title>
+        <!-- <link rel="stylesheet" href="/css/default.css" /> -->
+        <link rel="stylesheet" href="../css/style.css" />
+        <link href="//s.w.org/wp-includes/css/dashicons.css?20160504" rel="stylesheet" type="text/css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,300,600&amp;subset=latin,cyrillic-ext,greek-ext,greek,vietnamese,latin-ext,cyrillic" rel="stylesheet" type="text/css">
+
+    </head>
+    <body class="home blog hfeed has-header-image has-sidebar colors-light">
+      <div id="page" class="site">
+          <header id="masthead" class="site-header" role="banner">
+              <div class="custom-header" style="margin-bottom: 0px;">
+
+	              <div class="custom-header-media">
+	                <div id="wp-custom-header" class="wp-custom-header"><img src="../images/header.jpg" width="1282" height="100"></div>		</div>
+
+	                    <div class="site-branding" style="margin-bottom: 0px;">
+	                        <div class="wrap">
+
+	                          <div class="site-branding-text">
+					          <h1 class="site-title"><a href="#link" rel="home">Nix, the package manager</a></h1>
+
+						          <p class="site-description">Just sharing things</p>
+				                    </div><!-- .site-branding-text -->
+
+				                      <a href="#content" class="menu-scroll-down"><svg class="icon icon-arrow-right" aria-hidden="true" role="img"> <use href="#icon-arrow-right" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-right"></use> </svg><span class="screen-reader-text">Scroll down to content</span></a>
+
+	                        </div><!-- .wrap -->
+                      </div><!-- .site-branding -->
+
+              </div>
+        </header>
+
+        <main role="main" class="site-content-contain">
+            <div id="content" class="site-content">
+            <div class="wrap">
+                <header class="page-header">
+  <h2 class="page-title"></h2>
+  <link rel="shortcut  icon" href="images/favicon.ico" type="image/x-icon" />
+  <link href="../css/syntax.css" rel="stylesheet" />
+</header>
+<div id="primary" class="content-area">
+
+<article class="post type-post status-publish format-standard hentry">
+    <header class="entry-header">
+        <div class="entry-meta">
+            <span class="screen-reader-text">Posted on</span>
+            <a href="#" rel="bookmark">
+                <time class="entry-date published updated" datetime="2008-06-20T20:06:53+00:00">December 23, 2021</time></a>
+        </div>
+        <h3 class="entry-title"><a href="#" rel="bookmark">Nix, the package manager</a></h3>
+        
+    </header>
+    <section class="entry-content">
+        <p>On my current team we all had different laptops, running different OS <em>(fedora, Ubuntu, MacOS)</em>… We also were juggling between different projects, in different languages, with different dependencies, and different environment variables…</p>
+<p>Hence, we often were facing the following struggle:</p>
+<blockquote>
+<p>It works on my side</p>
+</blockquote>
+<p>I also remember how hard it was to get a fully working Haskell environment when we started developing our project with this language (thank you 32bits <code>lzlib</code> on our 64 bits MacOS…)!</p>
+<p><img src="../images/nixpm-sweating.gif" /></p>
+<p><strong>Then, we discover <a href="https://nixos.org/nix">Nix</a>!</strong></p>
+<h2 id="what-is-nix">What is Nix?</h2>
+<p>Actually, there are two different things behind this name:</p>
+<ul>
+<li>A package manager</li>
+<li>A simple lazy pure functional language that specializes in building packages</li>
+</ul>
+<p>As I have a basic knowledge of the language (I am able to copy/paste/adapt, but not more for the moment) <strong>this article will be about the Package Manager</strong>.</p>
+<h2 id="what-does-the-package-manager-do">What does the package manager do?</h2>
+<p>I will not use the most appropriate terms to describe what exactly does this package manager, but <strong>I will give you my comprehension, using my words</strong>. Anyway, you can have a look on the official website about <a href="https://nixos.org/guides/how-nix-works.html">How Nix works</a>.</p>
+<p>Naively, I want to say:</p>
+<blockquote>
+<p>Nix allows you to isolate the <code>build</code> of the package!</p>
+</blockquote>
+<p>In details, for each package built by Nix, it first computes its <code>derivation</code> <em>(this is usually done by evaluating expressions written in the Nix language)</em>.</p>
+<p>This <code>derivation</code> will lead in creating a file containing:</p>
+<ul>
+<li>mentions of all the files and other packages that will be required during the build</li>
+<li>build instructions for actually building the package,</li>
+<li>some metainformation about the package,</li>
+<li>most important, a store path under which the package will be installed: <code>/nix/store/&lt;hash&gt;-&lt;name&gt;-&lt;version&gt;</code> (where <code>hash</code> is a hash of all the other data in the derivation).</li>
+</ul>
+<p>For example, since the recent changes on Docker pricing policies, we now use <code>colima</code>. But there was no Nix derivation available, here is how our custom one looks like:</p>
+<pre class="shell"><code>{ buildGoModule, lib, fetchFromGitHub }:
+
+buildGoModule rec {
+  name = &quot;colima&quot;;
+  version = &quot;0.2.2&quot;;
+
+  src = fetchFromGitHub {
+    owner = &quot;abiosoft&quot;;
+    repo = &quot;colima&quot;;
+    rev = &quot;v${version}&quot;;
+    sha256 = &quot;sha256-vWNkYsT2XF+oMOQ3pb1+/a207js8B+EmVanRQrYE/2A=&quot;;
+  };
+
+  vendorSha256 = &quot;075wd4xsx0dxqf733ha1hiy1x2hzkxdn6g8g0vn6q9bbqbrscp0p&quot;;
+
+  meta = with lib; {
+    description = &quot;Colima - Container runtimes on macOS (and Linux) with minimal setup.&quot;;
+    homepage = &quot;https://github.com/abiosoft/colima&quot;;
+    license = licenses.mit;
+    platforms = platforms.linux ++ platforms.darwin;
+    maintainers = with maintainers; [ gsebil08 ];
+  };
+}</code></pre>
+<p><em>Despite the lack of knowledge on the Nix language, this is pretty easy to understand. The original project is a Go module, available on https://github.com/abiosoft/colima. The most difficult part, is to find the <code>sha256</code>, but almost everything is explained in the official documentation</em></p>
+<p>Then, it <em>creates</em> the derivation <em>(by running build instructions specified in it)</em> <strong>inside an isolated environment containing the dependencies and only the dependencies of the package</strong>.</p>
+<p>This way, Nix guarantees some really important properties:</p>
+<ul>
+<li><p><strong>Realising the same derivation will always get <em>(almost)</em> the same output</strong>, since the build commands only have access to the explicitly specified dependencies <em>(the output can differ if the build instruction uses some hardware-dependent information)</em></p></li>
+<li><p><strong>The same store path</strong> <em>(<code>/nix/store/&lt;hash&gt;-&lt;name&gt;-&lt;version&gt;</code>)</em> <strong>will always contain the result of <em>exactly</em> the same commands</strong>, since <code>&lt;hash&gt;</code> depends on all the variables that are explictly specified while to build this package.</p></li>
+</ul>
+<p>Ok, that was for the theorical part.</p>
+<p><strong>But how does Nix helps us everyday?</strong></p>
+<h2 id="some-of-the-benefits">Some of the benefits</h2>
+<p>I guess there are some others, like the <a href="https://docs.haskellstack.org/en/stable/nix_integration/">Nix integration</a> for <a href="https://docs.haskellstack.org/en/stable/README/">The Haskell Tool Stack</a>, but since I only use the <code>nix-shell</code>, I do not have any idea of possible other benefits…</p>
+<h3 id="reproducibility">Reproducibility</h3>
+<p>This is the first one coming to my mind! And I guess, the real motivation behind Nix.</p>
+<p><strong>Two people building the same package will always get the same output</strong>, at least, if you are careful enough with pinning the versions of inputs in place. And in the case of different inputs, it will be very clear since the store path will change!</p>
+<h3 id="binary-caching">Binary caching</h3>
+<p>Since the store path is known before building it and we are sure that the same store path will contain the same output, we can <em>replace</em> that store path from some other location (as long as that location has that path and we trust the person building it).</p>
+<p>To be clear, it is almost like substituting a function by its result since this function is pure and has no side-effects!</p>
+<h3 id="multiple-versions-of-any-package-can-be-installed-simultaneously">Multiple versions of any package can be installed simultaneously</h3>
+<p>Every package is installed under its own prefix, so there are no collisions. This can be really handy during development – think Python’s virtualenvs but for any language!</p>
+<p>To sum up, you can have two different versions of <code>docker-compose</code> (as long as they are both available…)!</p>
+<h3 id="distributed-building">Distributed building</h3>
+<p>Since we know exactly what is needed to <em>create</em> any derivation, it can be done remotely as long as the remote server has all the dependencies already (or can build them faster than the local machine).</p>
+<h3 id="easy-onboarding">Easy onboarding</h3>
+<p>I remember projects with a <code>getting started</code> section requiring to globally install dozens of different packages, with sometimes, a very specific version… Then you spent hours, or even days to get your development environment ready because nothing goes exactly like explained in this <code>getting-started.md</code> file…</p>
+<p>Thanks to Nix, you can provide a fully working <code>nix-shell</code>. Hence, the only required tool to install globally on your laptop is Nix. Within this provided <code>nix-shell</code> he will be able to find any referenced packages:</p>
+<pre class="shell"><code>$ which docker-compose
+docker-compose not found
+$ cd my-project-with-nix-shell
+$ nix-shell
+[nix-shell:~/my-project-with-nix-shell]$ which docker-compose
+/nix/store/kchjb4ncrk6c1qakdfd0xk11905fvy7f-docker-compose-1.29.2/bin/docker-compose</code></pre>
+<p><strong>How comfortable is that? A lot.</strong></p>
+<h2 id="the-ecosystem">The ecosystem</h2>
+<h3 id="nixos">NixOS</h3>
+<p>Directly linked to the Nix package manager and the Nix language, an OS is available. I do not use it, but if I understand correctly:</p>
+<p>NixOS is a GNU/Linux distribution using Nix as both a package manager and a configuration manager. Each configuration file is a derivation, and your whole system is a derivation, which depends on all the applications and config files you have explictly specified. Hence, we get all the benefits of Nix applied to the runtime environment.</p>
+<p>To sum up, if two people install a NixOS system that has the exact same store path, they will always get exactly the same system on their computers! Good luck doing that with any other OS!</p>
+<h3 id="nixpkgs">Nixpkgs</h3>
+<p><code>nixpkgs</code> is a massive collection of package descriptions using the Nix language. Once again, have a look on the <a href="https://nixos.wiki/wiki/Nixpkgs">official wiki</a></p>
+<h2 id="you-should-give-it-a-try">You should give it a try</h2>
+<p>The <code>nix-shell</code> is definitively a game changer. Even our Product Manager is now able to easily run our applications without our help!</p>
+<p>There are different ways to try it out, you can directly try NixOS on your machine, or on a VM. Or, as I do, you can install Nix and provide your own <code>nix-shell</code> for your different projects!</p>
+<p>Feel free to have a look on the <a href="https://nixos.org/guides/nix-pills/index.html">Nix pills</a> or even the <a href="https://nix.dev/">Nix cookbook</a>. They both are useful to understand the ecosystem and the glossary of this environment!</p>
+    </section>
+</article>
+
+</div>
+                <aside id="secondary" class="widget-area" role="complementary" aria-label="Blog Sidebar">
+  <section id="search-3" class="widget widget_search">
+
+    <!-- <form role="search" method="get" class="search-form" action="https://wp-themes.com/"> -->
+    <!--   <label for="search-form-5a315d71e7d90"> -->
+    <!--     <span class="screen-reader-text">Search for:</span> -->
+    <!--   </label> -->
+    <!--   <input type="search" id="search-form-5a315d71e7d90" class="search-field" placeholder="Search …" value="" name="s"> -->
+    <!--     <button type="submit" class="search-submit"><svg class="icon icon-search" aria-hidden="true" role="img"> <use href="#icon-search" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-search"></use> </svg><span class="screen-reader-text">Search</span></button> -->
+    <!--   </form> -->
+    <!-- </section> -->
+    <section id="archives-3" class="widget widget_archive">
+      <h2 class="widget-title">Pages</h2>
+      <ul>
+        <li><a href="../">Home</a></li>
+        <li><a href="../about.html">About me</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+        <li><a href="../recommended-readings.html">Recommended readings</a></li>
+      </ul>
+    </section>
+
+    <section id="recent-posts-3" class="widget widget_recent_entries">
+      <h2 class="widget-title">Recent Posts</h2>
+      <ul>
+        <li><a href="../posts/2021-12-23-Nix-the-Package-Manager.html" title="Nix, the package manager">Nix, the package manager</a></li>
+<li><a href="../posts/2021-11-24-Haskell-in-production.html" title="Haskell in production">Haskell in production</a></li>
+
+      </ul>
+    </section>
+  </section>
+
+  <!--   <section id="categories-3" class="widget widget_categories"> -->
+  <!--     <h2 class="widget-title">Categories</h2>		<ul> -->
+  <!--     <li class="cat-item cat-item-6"> -->
+  <!--       <a href="#">First Child Category</a> -->
+  <!--     </li> -->
+  <!-- 	</ul> -->
+  <!--   </section> -->
+</aside>
+
+            </div>
+            </div>
+
+          <footer id="colophon" class="site-footer" role="contentinfo">
+            <div class="wrap">
+              <div class="site-info">
+              Site proudly generated by
+              <a href="http://jaspervdj.be/hakyll">Hakyll</a>.
+              Theme provided by <a href="https://github.com/katychuang/wp-twentyseventeen">katychuang</a>
+              </div>
+            </div>
+          </footer>
+
+        </main>
+      </div>
+    </body>
+</html>
